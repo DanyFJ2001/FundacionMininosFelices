@@ -385,12 +385,12 @@
                 formar parte de esta hermosa labor. ¡Te esperamos con los brazos
                 abiertos!
             </p>
-
+    
             <div class="gallery">
                 <div class="gallery-item">
                     <img src="Imagenes/Vsitas/2022-03-28.jpg" alt="Gato Rescatado 2" />
                 </div>
-
+    
                 <div class="gallery-item">
                     <img src="Imagenes/Vsitas/2.jpg" alt="Gato Rescatado 2" />
                 </div>
@@ -403,7 +403,6 @@
                 <div class="gallery-item">
                     <img src="Imagenes/Vsitas/6.jpg" alt="Gato Rescatado 5" />
                 </div>
-
                 <div class="gallery-item">
                     <img src="Imagenes/Vsitas/7.jpg" alt="Gato Rescatado 6" />
                 </div>
@@ -433,7 +432,7 @@
                     <input type="tel" name="phone" placeholder="Tu número de teléfono" required />
                     <input type="text" name="id" placeholder="Cédula (Identificación)" required />
                 </fieldset>
-
+    
                 <fieldset>
                     <legend>Detalles de la visita</legend>
                     <input type="date" name="visit-date" id="visit-date" required />
@@ -448,10 +447,9 @@
                         <option value="Apradinamiento">Apadrinamiento</option>
                         <option value="Conocer la Fundacion">Conocer la fundación</option>
                     </select>
-                    <textarea name="message" rows="5" placeholder="¿Tienes algún comentario adicional?"
-                        required></textarea>
+                    <textarea name="message" rows="5" placeholder="¿Tienes algún comentario adicional?" required></textarea>
                 </fieldset>
-
+    
                 <button type="submit">Agendar visita</button>
                 <div id="loader" style="display: none">Procesando...</div>
             </form>
@@ -462,7 +460,43 @@
                 Ya existe una visita agendada con esta cédula.
             </div>
         </section>
-
+    
+        <!-- Modal de Política de Privacidad -->
+        <div id="privacyModal" class="modal">
+            <div class="modal-content">
+                <h2>Política de Privacidad</h2>
+                <p>En Fundación Mininos Felices, nos comprometemos a proteger la privacidad de nuestros visitantes y adoptantes. Esta política explica cómo recopilamos, usamos y protegemos tu información personal.</p>
+    
+                <h3>1. Información que Recopilamos</h3>
+                <ul>
+                    <li>Nombre completo</li>
+                    <li>Correo electrónico</li>
+                    <li>Número de teléfono</li>
+                    <li>Cédula de identidad</li>
+                    <li>Motivo de la visita</li>
+                </ul>
+    
+                <h3>2. Finalidad del Tratamiento de Datos</h3>
+                <p>Los datos se recopilan con el único propósito de coordinar visitas y mejorar nuestros servicios. No se comparten con terceros sin tu consentimiento.</p>
+    
+                <h3>3. Conservación de Datos</h3>
+                <p>Los datos serán almacenados por un periodo de 12 meses y luego eliminados de nuestra base de datos.</p>
+    
+                <h3>4. Seguridad</h3>
+                <p>Implementamos medidas de seguridad para evitar accesos no autorizados, uso indebido o alteración de tu información personal.</p>
+    
+                <h3>5. Derechos del Usuario</h3>
+                <p>Puedes solicitar acceso, modificación o eliminación de tus datos en cualquier momento enviando un correo a fundacionmininosfelices@gmail.com .</p>
+    
+                <label>
+                    <input type="checkbox" id="acceptPolicy">
+                    Acepto la Política de Privacidad.
+                </label>
+    
+                <button id="acceptAndSubmit" disabled>Aceptar y Enviar</button>
+            </div>
+        </div>
+    
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
             import {
@@ -472,7 +506,7 @@
                 get,
                 child,
             } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
-
+    
             const firebaseConfig = {
                 apiKey: "AIzaSyAi8rtJRjqi53D_HEAEb0jkBHnOqXMHQgs",
                 authDomain: "basemininosfelices.firebaseapp.com",
@@ -482,25 +516,43 @@
                 messagingSenderId: "583005291852",
                 appId: "1:583005291852:web:f757da338b32ecfd62bbe9",
             };
-
+    
             const app = initializeApp(firebaseConfig);
             const database = getDatabase(app);
-
+    
             const visitDateInput = document.getElementById("visit-date");
             const today = new Date().toISOString().split("T")[0];
             visitDateInput.setAttribute("min", today);
-
+    
             const visitForm = document.getElementById("visitForm");
             const loader = document.getElementById("loader");
             const successMessage = document.getElementById("successMessage");
             const errorMessage = document.getElementById("errorMessage");
-
-            visitForm.addEventListener("submit", async (event) => {
-                event.preventDefault();
+    
+            // Obtener elementos del modal
+            const privacyModal = document.getElementById("privacyModal");
+            const acceptPolicy = document.getElementById("acceptPolicy");
+            const acceptAndSubmit = document.getElementById("acceptAndSubmit");
+    
+            // Mostrar el modal cuando el usuario haga clic en "Agendar visita"
+            visitForm.addEventListener("submit", (event) => {
+                event.preventDefault(); // Evita el envío automático del formulario
+                privacyModal.style.display = "flex"; // Muestra el modal
+            });
+    
+            // Habilitar el botón solo si se marca la casilla
+            acceptPolicy.addEventListener("change", () => {
+                acceptAndSubmit.disabled = !acceptPolicy.checked;
+            });
+    
+            // Cerrar el modal y enviar el formulario cuando se acepte la política
+            acceptAndSubmit.addEventListener("click", async () => {
+                privacyModal.style.display = "none"; // Oculta el modal
+    
                 loader.style.display = "block";
                 errorMessage.style.display = "none";
                 successMessage.style.display = "none";
-
+    
                 const name = visitForm.elements["name"].value;
                 const email = visitForm.elements["email"].value;
                 const phone = visitForm.elements["phone"].value;
@@ -509,18 +561,18 @@
                 const visitTime = visitForm.elements["visit-time"].value;
                 const visitPurpose = visitForm.elements["visit-purpose"].value;
                 const message = visitForm.elements["message"].value;
-
+    
                 try {
                     // Verificar si la cédula ya existe
                     const dbRef = ref(database);
                     const snapshot = await get(child(dbRef, `visitas/${id}`));
-
+    
                     if (snapshot.exists()) {
                         loader.style.display = "none";
                         errorMessage.style.display = "block";
                         return;
                     }
-
+    
                     // Agregar la nueva visita usando la cédula como identificador único
                     await set(ref(database, `visitas/${id}`), {
                         name,
@@ -532,7 +584,7 @@
                         visitPurpose,
                         message,
                     });
-
+    
                     loader.style.display = "none";
                     successMessage.style.display = "block";
                     visitForm.reset();
@@ -544,7 +596,7 @@
                     console.error("Error al enviar los datos:", error);
                 }
             });
-
+    
             visitForm.addEventListener("input", (event) => {
                 const target = event.target;
                 if (target.validity.valid) {
@@ -557,7 +609,6 @@
             });
         </script>
     </div>
-
     <footer class="footer" id="contacto">
         <div class="footer-content">
             <div class="footer-logo">
