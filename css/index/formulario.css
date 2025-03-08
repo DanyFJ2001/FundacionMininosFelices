@@ -218,7 +218,7 @@
       text-align: left;
     }
   }
-
+  
     /* Estilos del modal */
     .modal {
         display: none;
@@ -230,23 +230,60 @@
         background: rgba(0, 0, 0, 0.5);
         align-items: center;
         justify-content: center;
+        z-index: 1000; /* Asegura que el modal esté por encima de todo */
     }
 
     .modal-content {
         background: white;
         padding: 20px;
-        border-radius: 8px;
-        width: 50%;
-        text-align: center;
+        border-radius: 12px;
+        width: 60%;
+        max-width: 600px;
+        max-height: 80vh; /* Limita la altura del modal */
+        overflow-y: auto; /* Agrega una barra de desplazamiento vertical si es necesario */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-align: left;
     }
 
     .modal-content h2 {
         margin-top: 0;
+        font-size: 24px;
+        color: #333;
+        text-align: center; /* Centra el título */
+    }
+
+    .modal-content h3 {
+        font-size: 18px;
+        color: #555;
+        margin-top: 20px;
+    }
+
+    .modal-content p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .modal-content ul {
+        padding-left: 20px;
+        margin: 10px 0;
+    }
+
+    .modal-content ul li {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
     }
 
     .modal-content label {
         display: block;
-        margin-top: 10px;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .modal-content input[type="checkbox"] {
+        margin-right: 10px;
     }
 
     .modal-content button {
@@ -257,6 +294,8 @@
         border: none;
         cursor: pointer;
         border-radius: 5px;
+        font-size: 14px;
+        transition: background 0.3s ease;
     }
 
     .modal-content button:disabled {
@@ -266,4 +305,23 @@
 
     .modal-content button:hover:not(:disabled) {
         background: #218838;
+    }
+
+    /* Estilo para la barra de desplazamiento */
+    .modal-content::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover {
+        background: #555;
     }
